@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:id="@+id/ivProfileImage"
+        android:layout_gravity="top"
+        android:src="@drawable/ic_launcher"
+        android:layout_margin="5dp" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/tvName"
+        android:layout_gravity="center_horizontal"
+        android:textSize="12dp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/ivProfileImage"
+        android:layout_toEndOf="@+id/ivProfileImage"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/tvScreenname"
+        android:layout_gravity="center_horizontal"
+        android:textSize="12dp"
+        android:paddingLeft="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/tvName"
+        android:layout_toEndOf="@+id/tvName" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/tvBody"
+        android:autoLink="all"
+        android:linksClickable="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_below="@+id/tvScreenname"
+        android:layout_toRightOf="@+id/ivProfileImage"
+        android:gravity="top"
+        android:layout_toEndOf="@+id/ivProfileImage" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/tvRelativeDate"
+        android:layout_alignTop="@+id/ivProfileImage"
+        android:layout_alignParentEnd="true"
+        android:textSize="10sp" />
+
+</RelativeLayout>

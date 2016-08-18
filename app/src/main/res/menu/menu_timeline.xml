@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/miTwitterLogo"
+        android:icon="@drawable/ic_twitter_logo"
+        app:showAsAction="ifRoom"
+        android:title="Twitter">
+    </item>
+    <item
+        android:id="@+id/miCompose"
+        android:icon="@drawable/ic_compose"
+        app:showAsAction="ifRoom"
+        android:title="New Tweet">
+    </item>
+</menu>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:id="@+id/ivDetailProfileImage"
+        android:layout_gravity="top"
+        android:src="@drawable/ic_launcher"
+        android:layout_margin="5dp" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/tvDetailName"
+        android:layout_gravity="center_horizontal"
+        android:textSize="12dp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/ivDetailProfileImage"
+        android:layout_toEndOf="@+id/ivDetailProfileImage"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/tvDetailScreenname"
+        android:layout_gravity="center_horizontal"
+        android:textSize="12dp"
+        android:paddingLeft="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/tvDetailName"
+        android:layout_toEndOf="@+id/tvDetailName" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/tvDetailBody"
+        android:autoLink="all"
+        android:linksClickable="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_below="@+id/tvDetailScreenname"
+        android:layout_toRightOf="@+id/ivDetailProfileImage"
+        android:gravity="top"
+        android:layout_toEndOf="@+id/ivDetailProfileImage" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/tvDetailRelativeDate"
+        android:layout_alignTop="@+id/ivDetailProfileImage"
+        android:layout_alignParentEnd="true"
+        android:textSize="10sp" />
+
+    <ImageView
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:id="@+id/ivPreviewImage"
+        android:layout_gravity="bottom"
+        android:src="@drawable/ic_launcher"
+        android:layout_margin="5dp" />
+</RelativeLayout>
