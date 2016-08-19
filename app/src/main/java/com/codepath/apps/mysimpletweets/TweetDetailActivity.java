@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 
 import butterknife.BindView;
@@ -34,10 +35,11 @@ public class TweetDetailActivity extends AppCompatActivity {
 
         tweet = (Tweet) getIntent().getSerializableExtra("tweet");
 
-        tvUserName.setText(tweet.getUser().getScreenName());
+        tvUserName.setText("@" + tweet.getUser().getScreenName());
         tvName.setText(tweet.getUser().getName());
         tvBody.setText(tweet.getBody());
-        tvRelativeDate.setText(tweet.getCreatedAt());
+        tvRelativeDate.setText(Tweet.getRelativeTimeAgo(tweet.getCreatedAt()));
+        Glide.with(this).load(tweet.getUser().getProfileImageUrl()).into(ivProfileImage);
 
         ActionBar bar = getSupportActionBar();
         bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00aced")));

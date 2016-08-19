@@ -33,20 +33,40 @@ public class TwitterClient extends OAuthBaseClient {
 		super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
 	}
 
-	public void getHomeTimeline(AsyncHttpResponseHandler handler, int page) {
+	public void getHomeTimeline(AsyncHttpResponseHandler handler, long since_id) {
 		String apiUrl = getApiUrl("statuses/home_timeline.json");
 		RequestParams params = new RequestParams();
 		params.put("count", 25);
-		params.put("since_id", 1);
-		params.put("page", page);
+        if (since_id > 0) {
+            params.put("max_id", since_id);
+        }
 
 		getClient().get(apiUrl, params, handler);
 	}
 
-    public void postStatusUpdate(AsyncHttpResponseHandler handler, String body) {
+    public void postRetweet(AsyncHttpResponseHandler handler, long retweet_id) {
+        String apiUrl = getApiUrl("statuses/retweet/" + Long.toString(retweet_id) + ".json");
+        RequestParams params = new RequestParams();
+        params.put("id", retweet_id);
+
+        getClient().post(apiUrl, params, handler);
+    }
+
+    public void postStatusUpdate(AsyncHttpResponseHandler handler, String body, Long replyUID) {
         String apiUrl = getApiUrl("statuses/update.json");
         RequestParams params = new RequestParams();
         params.put("status", body);
+        if (replyUID != null) {
+            params.put("in_reply_to_status_id", replyUID);
+        }
+
+        getClient().post(apiUrl, params, handler);
+    }
+
+    public void postFavorite(AsyncHttpResponseHandler handler, Long favorite_id) {
+        String apiUrl = getApiUrl("favorites/create.json");
+        RequestParams params = new RequestParams();
+        params.put("id", favorite_id);
 
         getClient().post(apiUrl, params, handler);
     }

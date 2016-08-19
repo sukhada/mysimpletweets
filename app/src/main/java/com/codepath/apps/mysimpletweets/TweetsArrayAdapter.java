@@ -1,7 +1,13 @@
 package com.codepath.apps.mysimpletweets;
 
+import android.animation.AnimatorSet;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,13 +17,18 @@ import android.support.v7.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.mysimpletweets.models.Tweet;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by skulkarni on 8/17/16.
@@ -45,7 +56,12 @@ public class TweetsArrayAdapter extends RecyclerView.Adapter<TweetsArrayAdapter.
         private TextView tvName;
         private TextView tvBody;
         private TextView tvDate;
-        private ImageView ivPreviewImage;
+        private TextView tvFavoriteCount;
+        private TextView tvRetweetCount;
+        private ImageView ivReply;
+        private ImageView ivRetweet;
+        private ImageView ivFavorite;
+
 
         public TweetViewHolder(final View itemView) {
             super(itemView);
@@ -54,7 +70,11 @@ public class TweetsArrayAdapter extends RecyclerView.Adapter<TweetsArrayAdapter.
             tvName = (TextView) itemView.findViewById(R.id.tvName);
             tvBody = (TextView) itemView.findViewById(R.id.tvBody);
             tvDate = (TextView) itemView.findViewById(R.id.tvRelativeDate);
-            ivPreviewImage = (ImageView) itemView.findViewById(R.id.ivPreviewImage);
+            tvFavoriteCount = (TextView) itemView.findViewById(R.id.tvFavoriteCount);
+            tvRetweetCount = (TextView) itemView.findViewById(R.id.tvRetweetCount);
+            ivReply = (ImageView) itemView.findViewById(R.id.iv_reply);
+            ivRetweet = (ImageView) itemView.findViewById(R.id.iv_retweet);
+            ivFavorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
         }
 
         public void update(Tweet tweet, Context context) {
@@ -66,6 +86,8 @@ public class TweetsArrayAdapter extends RecyclerView.Adapter<TweetsArrayAdapter.
             }
             tvBody.setText(tweet.getBody());
             tvDate.setText(Tweet.getRelativeTimeAgo(tweet.getCreatedAt()));
+            tvRetweetCount.setText(Integer.toString(tweet.getRetweetCount()));
+            tvFavoriteCount.setText(Integer.toString(tweet.getFavouritesCount()));
         }
     }
 
@@ -84,8 +106,11 @@ public class TweetsArrayAdapter extends RecyclerView.Adapter<TweetsArrayAdapter.
     }
 
     @Override
-    public void onBindViewHolder(TweetViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(final TweetViewHolder viewHolder, final int position) {
         final Tweet tweet = tweets.get(position);
+        final TimelineActivity ta = (TimelineActivity) getContext();
+        final TwitterClient tc = TwitterApplication.getRestClient();
+
         viewHolder.update(tweet, getContext());
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,6 +119,85 @@ public class TweetsArrayAdapter extends RecyclerView.Adapter<TweetsArrayAdapter.
                 Tweet t = tweets.get(position);
                 i.putExtra("tweet", tweet);
                 getContext().startActivity(i);
+            }
+        });
+
+        viewHolder.ivRetweet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tc.postRetweet(new JsonHttpResponseHandler() {
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        super.onFailure(statusCode, headers, throwable, errorResponse);
+                    }
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        AnimatorSet set = new AnimatorSet();
+                        String newRetweetVal = Integer.toString((Integer.parseInt(viewHolder.tvRetweetCount.getText().toString())+1));
+                        viewHolder.tvRetweetCount.setText(newRetweetVal);
+                        set.playTogether(
+                                ObjectAnimator.ofObject(viewHolder.ivRetweet, "colorFilter", new ArgbEvaluator(),
+                                        /*Red*/0xFF32CD32, /*Gold*/0xFF008000)
+                                        .setDuration(200)
+                        );
+
+                        set.playTogether(
+                                ObjectAnimator.ofObject(viewHolder.tvRetweetCount, "textColor", new ArgbEvaluator(),
+                                        /*Red*/0xFF32CD32, /*Gold*/0xFF008000)
+                                        .setDuration(200)
+                        );
+                        set.start();
+                        super.onSuccess(statusCode, headers, response);
+                    }
+                }, tweet.getUid());
+            }
+        });
+
+        viewHolder.ivFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tc.postFavorite(new JsonHttpResponseHandler() {
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        super.onFailure(statusCode, headers, throwable, errorResponse);
+                    }
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        AnimatorSet set = new AnimatorSet();
+                        String newRetweetVal = Integer.toString((Integer.parseInt(viewHolder.tvFavoriteCount.getText().toString())+1));
+                        viewHolder.tvFavoriteCount.setText(newRetweetVal);
+                        set.playTogether(
+                                ObjectAnimator.ofObject(viewHolder.ivFavorite, "colorFilter", new ArgbEvaluator(),
+                                        /*Red*/0xFFFFF0F5, /*Gold*/0xFFFF0000)
+                                        .setDuration(200)
+                        );
+
+                        set.playTogether(
+                                ObjectAnimator.ofObject(viewHolder.ivFavorite, "textColor", new ArgbEvaluator(),
+                                        /*Red*/0xFFFFF0F5, /*Gold*/0xFFFF0000)
+                                        .setDuration(200)
+                        );
+                        set.start();
+                        super.onSuccess(statusCode, headers, response);
+                    }
+                }, tweet.getUid());
+            }
+        });
+
+
+        viewHolder.ivReply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fm = ta.getSupportFragmentManager();
+                ComposeFragment composeFragment = ComposeFragment.newInstance("Some Title");
+                Bundle args = new Bundle();
+                args.putLong("replyUID", tweet.getUid());
+                args.putString("replyName", tweet.getUser().getName());
+                args.putString("replyScreenName", tweet.getUser().getScreenName());
+                composeFragment.setArguments(args);
+                composeFragment.show(fm, "fragment_compose");
             }
         });
     }

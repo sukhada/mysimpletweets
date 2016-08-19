@@ -21,6 +21,17 @@ public class Tweet implements Serializable {
     private long uid;
     private User user;
     private String createdAt;
+    private int retweetCount;
+    private int favouritesCount;
+    private Boolean retweeted;
+
+    public int getRetweetCount() {
+        return retweetCount;
+    }
+
+    public int getFavouritesCount() {
+        return favouritesCount;
+    }
 
     public String getBody() {
         return body;
@@ -45,9 +56,8 @@ public class Tweet implements Serializable {
             tweet.uid = jsonObject.getLong("id");
             tweet.createdAt = jsonObject.getString("created_at");
             tweet.user = User.fromJSON(jsonObject.getJSONObject("user"));
-
-
-
+            tweet.retweetCount = jsonObject.getInt("retweet_count");
+            tweet.favouritesCount = jsonObject.getInt("favorite_count");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -83,9 +93,14 @@ public class Tweet implements Serializable {
         try {
             long dateMillis = sf.parse(rawJsonDate).getTime();
             relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
-                    System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
+                    System.currentTimeMillis() +  (14 * 60 * 60 * 1000), DateUtils.SECOND_IN_MILLIS).toString();
             relativeDate = relativeDate.replace("minutes", "m");
+            relativeDate = relativeDate.replace("hour", "h");
+            relativeDate = relativeDate.replace("ago", "");
             relativeDate = relativeDate.replace("hours", "h");
+            relativeDate = relativeDate.replace("hs", "h");
+            relativeDate = relativeDate.replace("in ", "");
+            relativeDate = relativeDate.replace(" ", "");
         } catch (ParseException e) {
             e.printStackTrace();
         }

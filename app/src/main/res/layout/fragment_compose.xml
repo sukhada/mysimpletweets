@@ -1,21 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="600dp">
 
+    <TextView
+        android:id="@+id/tv_reply_to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp" />
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="441dp"
+        android:layout_width="fill_parent"
+        android:layout_height="351dp"
         android:inputType="textMultiLine"
         android:ems="10"
         android:id="@+id/et_new_tweet"
-        android:gravity="left|top" />
+        android:gravity="left|top"
+        android:hint="What&apos;s happening?"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="67dp" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save"
+        android:text="Tweet"
         android:id="@+id/bv_save_tweet"
-        android:layout_gravity="right" />
-</LinearLayout>
+        android:layout_gravity="right"
+        android:layout_below="@+id/et_new_tweet"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>

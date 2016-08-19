@@ -27,6 +27,7 @@ import cz.msebera.android.httpclient.Header;
 public class ComposeFragment extends DialogFragment implements TextView.OnEditorActionListener {
     private EditText newTweet;
     private Button btSave;
+    private TextView replyTo;
     private TwitterClient client;
 
     public ComposeFragment() {
@@ -67,9 +68,21 @@ public class ComposeFragment extends DialogFragment implements TextView.OnEditor
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Bundle args = this.getArguments();
+        final Long replyUID = args.getLong("replyUID");
+        String replyToName = args.getString("replyName");
+        String replyToUserName = args.getString("replyScreenName");
+
+
+        replyTo = (TextView) view.findViewById(R.id.tv_reply_to);
         newTweet = (EditText) view.findViewById(R.id.et_new_tweet);
         btSave = (Button) view.findViewById(R.id.bv_save_tweet);
         client = TwitterApplication.getRestClient();
+
+        if (replyToName != null) {
+            replyTo.setText("In reply to " + replyToName);
+            newTweet.setText("@" + replyToUserName + " ");
+        }
 
         btSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,7 +100,7 @@ public class ComposeFragment extends DialogFragment implements TextView.OnEditor
                         Log.d("DEBUG", errorResponse.toString());
                         super.onFailure(statusCode, headers, throwable, errorResponse);
                     }
-                }, newTweet.getText().toString());
+                }, newTweet.getText().toString(), replyUID);
             }
         });
         newTweet.requestFocus();

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingEnd="10dp"
+    android:paddingTop="10dp">
 
     <ImageView
         android:layout_width="75dp"
@@ -18,9 +20,8 @@
         android:text="New Text"
         android:id="@+id/tvDetailName"
         android:layout_gravity="center_horizontal"
-        android:textSize="12dp"
+        android:textSize="12sp"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/ivDetailProfileImage"
         android:layout_toEndOf="@+id/ivDetailProfileImage"
         android:textStyle="bold" />
 
@@ -30,10 +31,9 @@
         android:text="New Text"
         android:id="@+id/tvDetailScreenname"
         android:layout_gravity="center_horizontal"
-        android:textSize="12dp"
+        android:textSize="12sp"
         android:paddingLeft="10dp"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/tvDetailName"
         android:layout_toEndOf="@+id/tvDetailName" />
 
     <TextView
@@ -45,7 +45,6 @@
         android:linksClickable="true"
         android:layout_gravity="center_horizontal"
         android:layout_below="@+id/tvDetailScreenname"
-        android:layout_toRightOf="@+id/ivDetailProfileImage"
         android:gravity="top"
         android:layout_toEndOf="@+id/ivDetailProfileImage" />
 

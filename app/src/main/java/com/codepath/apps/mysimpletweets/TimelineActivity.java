@@ -38,7 +38,7 @@ public class TimelineActivity extends AppCompatActivity  implements ComposeFragm
     private ArrayList<Tweet> tweets;
     private TweetsArrayAdapter aTweets;
     private RecyclerView lvTweets;
-    int currPage = 0;
+    long lastID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,6 @@ public class TimelineActivity extends AppCompatActivity  implements ComposeFragm
             public void onLoadMore(int page, int totalItemsCount) {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
-                currPage++;
                 populateTimeline();
             }
         });
@@ -102,15 +101,20 @@ public class TimelineActivity extends AppCompatActivity  implements ComposeFragm
         client.getHomeTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                tweets.addAll(Tweet.fromJSONArray(response));
-                aTweets.notifyDataSetChanged();
+                ArrayList<Tweet> tweetParsed = Tweet.fromJSONArray(response);
+                if (tweetParsed != null && tweetParsed.size() > 0) {
+                    Log.d("DEBUG", Long.toString(tweetParsed.get(tweetParsed.size()-1).getUid()));
+                    lastID = tweetParsed.get(tweetParsed.size()-1).getUid();
+                    tweets.addAll(tweetParsed);
+                    aTweets.notifyDataSetChanged();
+                }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
             }
-        }, currPage);
+        }, lastID);
     }
 
     @Override
@@ -119,4 +123,7 @@ public class TimelineActivity extends AppCompatActivity  implements ComposeFragm
         populateTimeline();
     }
 
+    public void launchComposeFrag(View view) {
+
+    }
 }
