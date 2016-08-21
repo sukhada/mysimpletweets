@@ -3,6 +3,8 @@ package com.codepath.apps.mysimpletweets;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -28,6 +31,7 @@ public class ComposeFragment extends DialogFragment implements TextView.OnEditor
     private EditText newTweet;
     private Button btSave;
     private TextView replyTo;
+    private TextView charCount;
     private TwitterClient client;
 
     public ComposeFragment() {
@@ -75,14 +79,24 @@ public class ComposeFragment extends DialogFragment implements TextView.OnEditor
 
 
         replyTo = (TextView) view.findViewById(R.id.tv_reply_to);
+        charCount = (TextView) view.findViewById(R.id.tvCharCount);
         newTweet = (EditText) view.findViewById(R.id.et_new_tweet);
         btSave = (Button) view.findViewById(R.id.bv_save_tweet);
+        ImageView ivClose = (ImageView) view.findViewById(R.id.iv_close);
+
         client = TwitterApplication.getRestClient();
 
         if (replyToName != null) {
             replyTo.setText("In reply to " + replyToName);
             newTweet.setText("@" + replyToUserName + " ");
         }
+
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
 
         btSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,7 +117,33 @@ public class ComposeFragment extends DialogFragment implements TextView.OnEditor
                 }, newTweet.getText().toString(), replyUID);
             }
         });
-        newTweet.requestFocus();
+
+
+
+        newTweet.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                int char_count = 140 - charSequence.length();
+                if (char_count < 0) {
+                    charCount.setTextColor(0xFFFF0000);
+                    btSave.setEnabled(false);
+                }
+                else {
+                    charCount.setTextColor(0xFF000000);
+                    btSave.setEnabled(true);
+                }
+                charCount.setText(Integer.toString(char_count));
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+        newTweet.setSelection(newTweet.getText().length());
         getDialog().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 

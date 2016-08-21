@@ -78,7 +78,6 @@ public class TimelineActivity extends AppCompatActivity  implements ComposeFragm
                     // Your code to refresh the list here.
                     // Make sure you call swipeContainer.setRefreshing(false)
                     // once the network request has completed successfully.
-                    Toast.makeText(self, "Connect to internet to view latest tweets", Toast.LENGTH_LONG).show();
                     lastID = 0;
                     populateTimeline();
                 }
@@ -158,8 +157,8 @@ public class TimelineActivity extends AppCompatActivity  implements ComposeFragm
                     lastID = tweetParsed.get(tweetParsed.size()-1).getUid();
                     tweets.addAll(tweetParsed);
                     aTweets.notifyDataSetChanged();
-                    swipeContainer.setRefreshing(false);
                 }
+                swipeContainer.setRefreshing(false);
             }
 
             @Override

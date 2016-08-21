@@ -5,8 +5,8 @@
     android:paddingTop="10dp">
 
     <ImageView
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:id="@+id/ivProfileImage"
         android:layout_gravity="top"
         android:src="@drawable/ic_launcher"
@@ -92,7 +92,7 @@
         android:layout_below="@+id/tvBody"
         android:layout_toEndOf="@id/iv_retweet"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="12dp"
         android:textSize="11sp"
         android:paddingLeft="3dp" />
 
@@ -116,7 +116,7 @@
         android:layout_below="@+id/tvBody"
         android:layout_toRightOf="@id/iv_favorite"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="12dp"
         android:paddingLeft="3dp"
         android:textSize="11sp" />
 

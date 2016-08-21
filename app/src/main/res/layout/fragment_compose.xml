@@ -5,9 +5,10 @@
 
     <TextView
         android:id="@+id/tv_reply_to"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp" />
+        android:layout_marginLeft="5dp"/>
+
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="351dp"
@@ -16,9 +17,20 @@
         android:id="@+id/et_new_tweet"
         android:gravity="left|top"
         android:hint="What&apos;s happening?"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="67dp" />
+        android:layout_below="@+id/tv_reply_to"
+        android:layout_alignEnd="@+id/bv_save_tweet"
+        android:layout_marginTop="45dp"
+        android:background="@android:color/transparent"
+        android:paddingLeft="5dp" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="5dp"
+        android:background="@drawable/textlines"
+        android:layout_below="@id/et_new_tweet"
+        android:padding="30dp"
+        android:textColor="#d3d3d3"
+        android:textSize="18sp" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -28,5 +40,31 @@
         android:id="@+id/bv_save_tweet"
         android:layout_gravity="right"
         android:layout_below="@+id/et_new_tweet"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:background="#00aced"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp" />
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/iv_close"
+        android:layout_above="@+id/et_new_tweet"
+        android:src="@drawable/ic_close"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:tint="#a8a8a8" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="140"
+        android:id="@+id/tvCharCount"
+        android:gravity="right"
+        android:layout_below="@id/iv_close"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="10dp" />
+
 </RelativeLayout>

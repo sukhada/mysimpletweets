@@ -59,7 +59,7 @@ public class TweetDetailActivity extends AppCompatActivity {
         tvDetailRetweetCount.setText(Integer.toString(tweet.getRetweetCount()));
         tvDetailFavoriteCount.setText(Integer.toString(tweet.getFavouritesCount()));
         Glide.with(this).load(tweet.getUser().getProfileImageUrl())
-                .bitmapTransform(new RoundedCornersTransformation(this, 15, 5))
+                .bitmapTransform(new RoundedCornersTransformation(this, 5, 0))
                 .into(ivProfileImage);
 
         ActionBar bar = getSupportActionBar();

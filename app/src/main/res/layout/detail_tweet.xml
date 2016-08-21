@@ -86,7 +86,7 @@
         android:layout_below="@+id/tvDetailBody"
         android:layout_toEndOf="@id/iv_detail_retweet"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="12dp"
         android:paddingLeft="3dp"
         android:textSize="11sp" />
 
@@ -110,7 +110,7 @@
         android:layout_below="@+id/tvDetailBody"
         android:layout_toRightOf="@id/iv_detail_favorite"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="12dp"
         android:paddingLeft="3dp"
         android:textSize="11sp" />
 

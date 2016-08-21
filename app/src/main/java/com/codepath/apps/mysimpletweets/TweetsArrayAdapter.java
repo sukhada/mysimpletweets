@@ -86,7 +86,7 @@ public class TweetsArrayAdapter extends RecyclerView.Adapter<TweetsArrayAdapter.
                 tvUserName.setText("@" + tweet.getUser().getScreenName());
                 tvName.setText(tweet.getUser().getName());
                 Glide.with(context).load(tweet.getUser().getProfileImageUrl())
-                        .bitmapTransform(new RoundedCornersTransformation(context, 10, 5))
+                        .bitmapTransform(new RoundedCornersTransformation(context, 5, 0))
                         .into(ivProfileImage);
             }
             tvBody.setText(tweet.getBody());
