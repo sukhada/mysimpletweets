@@ -17,7 +17,6 @@ import java.io.Serializable;
 public class User extends Model implements Serializable {
     @Column(name = "Name")
     private String name;
-    @Column(name = "uID", unique = true, onUniqueConflict = Column.ConflictAction.IGNORE)
     private long uid;
     @Column(name = "Screename")
     private String screenName;

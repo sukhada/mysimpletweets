@@ -9,7 +9,7 @@
         android:layout_height="50dp"
         android:id="@+id/ivProfileImage"
         android:layout_gravity="top"
-        android:src="@drawable/ic_launcher"
+        android:src="@drawable/ic_twitter_logo"
         android:layout_margin="5dp" />
 
     <TextView

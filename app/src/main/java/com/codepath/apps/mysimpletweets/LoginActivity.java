@@ -1,9 +1,14 @@
 package com.codepath.apps.mysimpletweets;
 
+import android.animation.AnimatorSet;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.codepath.oauth.OAuthLoginActionBarActivity;
@@ -14,6 +19,31 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+		ImageView ivTweet = (ImageView) findViewById(R.id.logo);
+		Button btLogin = (Button) findViewById(R.id.btLogin);
+
+		AnimatorSet set = new AnimatorSet();
+		set.playTogether(
+				ObjectAnimator.ofFloat(ivTweet, "scaleY", 1.0f, 3.0f)
+						.setDuration(500)
+		);
+
+		set.playTogether(
+				ObjectAnimator.ofFloat(ivTweet, "scaleX", 1.0f, 3.0f)
+						.setDuration(500)
+		);
+
+		set.playTogether(
+				ObjectAnimator.ofFloat(ivTweet, "scaleY", 3.0f, 0.3f)
+						.setDuration(1000)
+		);
+
+		set.playTogether(
+				ObjectAnimator.ofFloat(ivTweet, "scaleX", 3.0f, 0.3f)
+						.setDuration(1000)
+		);
+
+		set.start();
 	}
 
 

@@ -113,8 +113,8 @@ public class TweetsArrayAdapter extends RecyclerView.Adapter<TweetsArrayAdapter.
             }
 
             if (tweet.getRetweeted()) {
-                tvRetweetCount.setTextColor(0xFFA8A8A8);
-                ivRetweet.setColorFilter(0xFFA8A8A8);
+                tvRetweetCount.setTextColor(0xFF008000);
+                ivRetweet.setColorFilter(0xFF008000);
             }
             else {
                 tvRetweetCount.setTextColor(0xFFA8A8A8);
@@ -180,6 +180,8 @@ public class TweetsArrayAdapter extends RecyclerView.Adapter<TweetsArrayAdapter.
                                         .setDuration(200)
                         );
                         set.start();
+                        tweet.setRetweeted(true);
+                        tweet.setRetweetCount(tweet.getRetweetCount()+1);
                         super.onSuccess(statusCode, headers, response);
                     }
                 }, tweet.getUid());
@@ -212,6 +214,8 @@ public class TweetsArrayAdapter extends RecyclerView.Adapter<TweetsArrayAdapter.
                                         .setDuration(200)
                         );
                         set.start();
+                        tweet.setFavorited(true);
+                        tweet.setFavouritesCount(tweet.getFavouritesCount()+1);
                         super.onSuccess(statusCode, headers, response);
                     }
                 }, tweet.getUid());

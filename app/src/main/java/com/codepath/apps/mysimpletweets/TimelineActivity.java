@@ -1,6 +1,7 @@
 package com.codepath.apps.mysimpletweets;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
@@ -55,8 +56,14 @@ public class TimelineActivity extends AppCompatActivity  implements ComposeFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
 
-        ActionBar bar = getSupportActionBar();
-        bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00aced")));
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setLogo(R.drawable.ic_twitter_logo);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+
 
         Configuration.Builder config = new Configuration.Builder(this);
         config.addModelClasses(Tweet.class, User.class);
@@ -144,6 +151,13 @@ public class TimelineActivity extends AppCompatActivity  implements ComposeFragm
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
 
+        switch (item.getItemId()){
+            case R.id.miCompose:
+                FragmentManager fm = getSupportFragmentManager();
+                ComposeFragment composeFragment = ComposeFragment.newInstance("Some Title");
+                composeFragment.show(fm, "fragment_compose");
+                break;
+        }
         return super.onOptionsItemSelected(item);
     }
 

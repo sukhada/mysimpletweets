@@ -39,10 +39,28 @@ public class Tweet extends Model implements Serializable {
     private User user;
     @Column(name = "CreatedAt")
     private String createdAt;
+
+    public void setRetweetCount(int retweetCount) {
+        this.retweetCount = retweetCount;
+    }
+
+    public void setFavouritesCount(int favouritesCount) {
+        this.favouritesCount = favouritesCount;
+    }
+
     @Column(name = "RetweetCount")
     private int retweetCount;
     @Column(name = "FavoritesCount")
     private int favouritesCount;
+
+    public void setRetweeted(Boolean retweeted) {
+        this.retweeted = retweeted;
+    }
+
+    public void setFavorited(Boolean favorited) {
+        this.favorited = favorited;
+    }
+
     @Column(name = "Retweeted")
     private Boolean retweeted;
     @Column(name = "Favorited")

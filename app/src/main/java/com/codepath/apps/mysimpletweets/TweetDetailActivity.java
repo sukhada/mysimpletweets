@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -49,6 +50,14 @@ public class TweetDetailActivity extends AppCompatActivity {
         setContentView(R.layout.detail_tweet);
         ButterKnife.bind(this);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setLogo(R.drawable.ic_twitter_logo);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+
+
         tweet = (Tweet) getIntent().getSerializableExtra("tweet");
 
         final TwitterClient tc = new TwitterClient(this);
@@ -63,7 +72,6 @@ public class TweetDetailActivity extends AppCompatActivity {
                 .into(ivProfileImage);
 
         ActionBar bar = getSupportActionBar();
-        bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00aced")));
 
         if (tweet.getMedia() != null) {
             Glide.with(this).load(tweet.getMedia())
@@ -74,6 +82,24 @@ public class TweetDetailActivity extends AppCompatActivity {
             ivDetailPreview.setImageResource(0);
         }
 
+
+        if (tweet.getFavorited()) {
+            tvDetailFavoriteCount.setTextColor(0xFFFF0000);
+            ivDetailFavorite.setColorFilter(0xFFFF0000);
+        }
+        else {
+            tvDetailFavoriteCount.setTextColor(0xFFA8A8A8);
+            ivDetailFavorite.setColorFilter(0xFFA8A8A8);
+        }
+
+        if (tweet.getRetweeted()) {
+            tvDetailRetweetCount.setTextColor(0xFF008000);
+            ivDetailRetweet.setColorFilter(0xFF008000);
+        }
+        else {
+            tvDetailRetweetCount.setTextColor(0xFFA8A8A8);
+            ivDetailRetweet.setColorFilter(0xFFA8A8A8);
+        }
 
         ivDetailRetweet.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,6 +127,8 @@ public class TweetDetailActivity extends AppCompatActivity {
                                         .setDuration(200)
                         );
                         set.start();
+                        tweet.setRetweeted(true);
+                        tweet.setRetweetCount(tweet.getRetweetCount()+1);
                         super.onSuccess(statusCode, headers, response);
                     }
                 }, tweet.getUid());
@@ -133,6 +161,8 @@ public class TweetDetailActivity extends AppCompatActivity {
                                         .setDuration(200)
                         );
                         set.start();
+                        tweet.setFavorited(true);
+                        tweet.setFavouritesCount(tweet.getFavouritesCount()+1);
                         super.onSuccess(statusCode, headers, response);
                     }
                 }, tweet.getUid());
