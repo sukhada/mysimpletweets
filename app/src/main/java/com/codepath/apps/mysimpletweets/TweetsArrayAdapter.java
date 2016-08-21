@@ -29,6 +29,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import cz.msebera.android.httpclient.Header;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
  * Created by skulkarni on 8/17/16.
@@ -61,6 +62,7 @@ public class TweetsArrayAdapter extends RecyclerView.Adapter<TweetsArrayAdapter.
         private ImageView ivReply;
         private ImageView ivRetweet;
         private ImageView ivFavorite;
+        private ImageView ivPreview;
 
 
         public TweetViewHolder(final View itemView) {
@@ -75,6 +77,7 @@ public class TweetsArrayAdapter extends RecyclerView.Adapter<TweetsArrayAdapter.
             ivReply = (ImageView) itemView.findViewById(R.id.iv_reply);
             ivRetweet = (ImageView) itemView.findViewById(R.id.iv_retweet);
             ivFavorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
+            ivPreview = (ImageView) itemView.findViewById(R.id.ivPreviewImage);
         }
 
         public void update(Tweet tweet, Context context) {
@@ -82,12 +85,41 @@ public class TweetsArrayAdapter extends RecyclerView.Adapter<TweetsArrayAdapter.
             if (tweet.getUser() != null) {
                 tvUserName.setText("@" + tweet.getUser().getScreenName());
                 tvName.setText(tweet.getUser().getName());
-                Glide.with(context).load(tweet.getUser().getProfileImageUrl()).into(ivProfileImage);
+                Glide.with(context).load(tweet.getUser().getProfileImageUrl())
+                        .bitmapTransform(new RoundedCornersTransformation(context, 10, 5))
+                        .into(ivProfileImage);
             }
             tvBody.setText(tweet.getBody());
             tvDate.setText(Tweet.getRelativeTimeAgo(tweet.getCreatedAt()));
             tvRetweetCount.setText(Integer.toString(tweet.getRetweetCount()));
             tvFavoriteCount.setText(Integer.toString(tweet.getFavouritesCount()));
+
+            if (tweet.getMedia() != null) {
+                Glide.with(context).load(tweet.getMedia())
+                        .bitmapTransform(new RoundedCornersTransformation(context, 15, 0))
+                        .into(ivPreview);
+            }
+            else {
+                ivPreview.setImageResource(0);
+            }
+
+            if (tweet.getFavorited()) {
+                tvFavoriteCount.setTextColor(0xFFFF0000);
+                ivFavorite.setColorFilter(0xFFFF0000);
+            }
+            else {
+                tvFavoriteCount.setTextColor(0xFFA8A8A8);
+                ivFavorite.setColorFilter(0xFFA8A8A8);
+            }
+
+            if (tweet.getRetweeted()) {
+                tvRetweetCount.setTextColor(0xFFA8A8A8);
+                ivRetweet.setColorFilter(0xFFA8A8A8);
+            }
+            else {
+                tvRetweetCount.setTextColor(0xFFA8A8A8);
+                ivRetweet.setColorFilter(0xFFA8A8A8);
+            }
         }
     }
 
@@ -175,7 +207,7 @@ public class TweetsArrayAdapter extends RecyclerView.Adapter<TweetsArrayAdapter.
                         );
 
                         set.playTogether(
-                                ObjectAnimator.ofObject(viewHolder.ivFavorite, "textColor", new ArgbEvaluator(),
+                                ObjectAnimator.ofObject(viewHolder.tvFavoriteCount, "textColor", new ArgbEvaluator(),
                                         /*Red*/0xFFFFF0F5, /*Gold*/0xFFFF0000)
                                         .setDuration(200)
                         );

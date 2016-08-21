@@ -1,7 +1,13 @@
 package com.codepath.apps.mysimpletweets.models;
 
+import android.os.SystemClock;
 import android.text.format.DateUtils;
 import android.util.Log;
+
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,19 +17,51 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import org.ocpsoft.prettytime.PrettyTime;
+
+
+import static android.text.format.DateUtils.*;
 
 /**
  * Created by skulkarni on 8/17/16.
  */
-public class Tweet implements Serializable {
+@Table(name = "Tweets")
+public class Tweet extends Model implements Serializable {
+    @Column(name = "Body")
     private String body;
+    @Column(name = "uID", unique = true, onUniqueConflict = Column.ConflictAction.IGNORE)
     private long uid;
+    @Column(name = "User", onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
     private User user;
+    @Column(name = "CreatedAt")
     private String createdAt;
+    @Column(name = "RetweetCount")
     private int retweetCount;
+    @Column(name = "FavoritesCount")
     private int favouritesCount;
+    @Column(name = "Retweeted")
     private Boolean retweeted;
+    @Column(name = "Favorited")
+    private Boolean favorited;
+    @Column(name = "Media")
+    private String media;
+
+
+    public String getMedia() {
+        return media;
+    }
+
+    public Boolean getFavorited() {
+        return favorited;
+    }
+
+    public Boolean getRetweeted() {
+        return retweeted;
+    }
 
     public int getRetweetCount() {
         return retweetCount;
@@ -49,20 +87,51 @@ public class Tweet implements Serializable {
         return user;
     }
 
-    public static Tweet fromJSON(JSONObject jsonObject) {
-        Tweet tweet = new Tweet();
+    public Tweet(){
+        super();
+    }
+
+    public Tweet(JSONObject jsonObject) {
+        super();
         try {
-            tweet.body = jsonObject.getString("text");
-            tweet.uid = jsonObject.getLong("id");
-            tweet.createdAt = jsonObject.getString("created_at");
-            tweet.user = User.fromJSON(jsonObject.getJSONObject("user"));
-            tweet.retweetCount = jsonObject.getInt("retweet_count");
-            tweet.favouritesCount = jsonObject.getInt("favorite_count");
+            this.body = jsonObject.getString("text");
+            this.uid = jsonObject.getLong("id");
+            this.createdAt = jsonObject.getString("created_at");
+            User u = new User(jsonObject.getJSONObject("user"));
+            u.save();
+            this.user = u;
+            this.retweetCount = jsonObject.getInt("retweet_count");
+            this.favouritesCount = jsonObject.getInt("favorite_count");
+            this.retweeted = jsonObject.getBoolean("retweeted");
+            this.favorited = jsonObject.getBoolean("favorited");
+
+            JSONObject extended_entities =  jsonObject.getJSONObject("extended_entities");
+            String media = null;
+            if (extended_entities != null) {
+                JSONArray mediaArr = extended_entities.getJSONArray("media");
+
+                if (mediaArr != null) {
+                    JSONObject m = (JSONObject) mediaArr.get(0);
+                    this.media = m.getString("media_url");
+                }
+            }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
 
-        return tweet;
+    public static List<Tweet> getLatestTweets() {
+        return new Select()
+                .from(Tweet.class)
+                .orderBy("CreatedAt DESC")
+                .limit(50)
+                .execute();
+    }
+
+    // Record Finders
+    public static Tweet byId(long id) {
+        return new Select().from(Tweet.class).where("id = ?", id).executeSingle();
     }
 
     public static ArrayList<Tweet> fromJSONArray(JSONArray jsonArray) {
@@ -70,7 +139,8 @@ public class Tweet implements Serializable {
         for (int i = 0; i < jsonArray.length(); i++) {
             try {
                 JSONObject tweetJson = jsonArray.getJSONObject(i);
-                Tweet tweet = Tweet.fromJSON(tweetJson);
+                Tweet tweet = new Tweet(tweetJson);
+                tweet.save();
                 if (tweet != null) {
                     tweets.add(tweet);
                 }
@@ -88,18 +158,20 @@ public class Tweet implements Serializable {
         String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
         SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
         sf.setLenient(true);
-
         String relativeDate = "";
         try {
             long dateMillis = sf.parse(rawJsonDate).getTime();
+            long nowMillis = System.currentTimeMillis();
             relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
-                    System.currentTimeMillis() +  (14 * 60 * 60 * 1000), DateUtils.SECOND_IN_MILLIS).toString();
+                    nowMillis, SECOND_IN_MILLIS).toString();
+
             relativeDate = relativeDate.replace("minutes", "m");
-            relativeDate = relativeDate.replace("hour", "h");
-            relativeDate = relativeDate.replace("ago", "");
+            relativeDate = relativeDate.replace("minute", "m");
             relativeDate = relativeDate.replace("hours", "h");
-            relativeDate = relativeDate.replace("hs", "h");
-            relativeDate = relativeDate.replace("in ", "");
+            relativeDate = relativeDate.replace("hour", "h");
+            relativeDate = relativeDate.replace("seconds", "s");
+            relativeDate = relativeDate.replace("second", "s");
+            relativeDate = relativeDate.replace("ago", "");
             relativeDate = relativeDate.replace(" ", "");
         } catch (ParseException e) {
             e.printStackTrace();

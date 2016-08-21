@@ -1,7 +1,11 @@
 package com.codepath.apps.mysimpletweets;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
@@ -22,13 +26,18 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.activeandroid.ActiveAndroid;
+import com.activeandroid.Configuration;
+import com.activeandroid.query.Delete;
 import com.codepath.apps.mysimpletweets.models.Tweet;
+import com.codepath.apps.mysimpletweets.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -38,6 +47,7 @@ public class TimelineActivity extends AppCompatActivity  implements ComposeFragm
     private ArrayList<Tweet> tweets;
     private TweetsArrayAdapter aTweets;
     private RecyclerView lvTweets;
+    private SwipeRefreshLayout swipeContainer;
     long lastID = 0;
 
     @Override
@@ -48,6 +58,9 @@ public class TimelineActivity extends AppCompatActivity  implements ComposeFragm
         ActionBar bar = getSupportActionBar();
         bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00aced")));
 
+        Configuration.Builder config = new Configuration.Builder(this);
+        config.addModelClasses(Tweet.class, User.class);
+        ActiveAndroid.initialize(config.create());
 
         lvTweets = (RecyclerView) findViewById(R.id.lvTweets);
         tweets = new ArrayList<>();
@@ -55,6 +68,27 @@ public class TimelineActivity extends AppCompatActivity  implements ComposeFragm
         lvTweets.setAdapter(aTweets);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         lvTweets.setLayoutManager(linearLayoutManager);
+        final Context self = this;
+        // Setup refresh listener which triggers new data loading
+        if (isNetworkAvailable()) {
+            swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+            swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    // Your code to refresh the list here.
+                    // Make sure you call swipeContainer.setRefreshing(false)
+                    // once the network request has completed successfully.
+                    Toast.makeText(self, "Connect to internet to view latest tweets", Toast.LENGTH_LONG).show();
+                    lastID = 0;
+                    populateTimeline();
+                }
+            });
+            // Configure the refreshing colors
+            swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                    android.R.color.holo_green_light,
+                    android.R.color.holo_orange_light,
+                    android.R.color.holo_red_light);
+        }
 
         lvTweets.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
@@ -66,8 +100,25 @@ public class TimelineActivity extends AppCompatActivity  implements ComposeFragm
         });
 
         client = TwitterApplication.getRestClient();
-        populateTimeline();
+        if (isNetworkAvailable()) {
+            populateTimeline();
+        }
+        else {
+            List<Tweet> arrTweets = (ArrayList) Tweet.getLatestTweets();
+            tweets.clear();
+            tweets.addAll(arrTweets);
+            aTweets.notifyDataSetChanged();
+            Toast.makeText(this, "Connect to internet to view latest tweets", Toast.LENGTH_LONG).show();
+        }
     }
+
+    private Boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -107,6 +158,7 @@ public class TimelineActivity extends AppCompatActivity  implements ComposeFragm
                     lastID = tweetParsed.get(tweetParsed.size()-1).getUid();
                     tweets.addAll(tweetParsed);
                     aTweets.notifyDataSetChanged();
+                    swipeContainer.setRefreshing(false);
                 }
             }
 
@@ -114,16 +166,16 @@ public class TimelineActivity extends AppCompatActivity  implements ComposeFragm
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
             }
-        }, lastID);
+        }, lastID-1);
     }
 
     @Override
     public void onFinishComposeDialog(String inputText) {
+        lastID = 0;
         tweets.clear();
+        aTweets.notifyDataSetChanged();
+
         populateTimeline();
     }
 
-    public void launchComposeFrag(View view) {
-
-    }
 }
