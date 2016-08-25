@@ -31,6 +31,7 @@ import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
 import com.activeandroid.query.Delete;
 import com.codepath.apps.mysimpletweets.fragments.HomeTimelineFragment;
+import com.codepath.apps.mysimpletweets.fragments.MentionsTimelineFragment;
 import com.codepath.apps.mysimpletweets.fragments.TweetsListFragment;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.codepath.apps.mysimpletweets.models.User;
@@ -45,7 +46,7 @@ import java.util.List;
 import cz.msebera.android.httpclient.Header;
 
 public class TimelineActivity extends AppCompatActivity  implements ComposeFragment.CreateTweetDialogListener {
-    private HomeTimelineFragment homeTimelineFragment;
+    private MentionsTimelineFragment homeTimelineFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,7 @@ public class TimelineActivity extends AppCompatActivity  implements ComposeFragm
         config.addModelClasses(Tweet.class, User.class);
         ActiveAndroid.initialize(config.create());
 
-        homeTimelineFragment = (HomeTimelineFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_tweets);
+        homeTimelineFragment = (MentionsTimelineFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_tweets);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
