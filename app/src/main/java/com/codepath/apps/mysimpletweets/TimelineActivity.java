@@ -30,6 +30,8 @@ import android.widget.Toast;
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
 import com.activeandroid.query.Delete;
+import com.codepath.apps.mysimpletweets.fragments.HomeTimelineFragment;
+import com.codepath.apps.mysimpletweets.fragments.TweetsListFragment;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.codepath.apps.mysimpletweets.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -43,13 +45,7 @@ import java.util.List;
 import cz.msebera.android.httpclient.Header;
 
 public class TimelineActivity extends AppCompatActivity  implements ComposeFragment.CreateTweetDialogListener {
-
-    private TwitterClient client;
-    private ArrayList<Tweet> tweets;
-    private TweetsArrayAdapter aTweets;
-    private RecyclerView lvTweets;
-    private SwipeRefreshLayout swipeContainer;
-    long lastID = 0;
+    private HomeTimelineFragment homeTimelineFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,63 +65,8 @@ public class TimelineActivity extends AppCompatActivity  implements ComposeFragm
         config.addModelClasses(Tweet.class, User.class);
         ActiveAndroid.initialize(config.create());
 
-        lvTweets = (RecyclerView) findViewById(R.id.lvTweets);
-        tweets = new ArrayList<>();
-        aTweets = new TweetsArrayAdapter(this, tweets);
-        lvTweets.setAdapter(aTweets);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        lvTweets.setLayoutManager(linearLayoutManager);
-        final Context self = this;
-        // Setup refresh listener which triggers new data loading
-        if (isNetworkAvailable()) {
-            swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
-            swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    // Your code to refresh the list here.
-                    // Make sure you call swipeContainer.setRefreshing(false)
-                    // once the network request has completed successfully.
-                    lastID = 0;
-                    populateTimeline();
-                }
-            });
-            // Configure the refreshing colors
-            swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-                    android.R.color.holo_green_light,
-                    android.R.color.holo_orange_light,
-                    android.R.color.holo_red_light);
-        }
-
-        lvTweets.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to the bottom of the list
-                populateTimeline();
-            }
-        });
-
-        client = TwitterApplication.getRestClient();
-        if (isNetworkAvailable()) {
-            populateTimeline();
-        }
-        else {
-            List<Tweet> arrTweets = (ArrayList) Tweet.getLatestTweets();
-            tweets.clear();
-            tweets.addAll(arrTweets);
-            aTweets.notifyDataSetChanged();
-            Toast.makeText(this, "Connect to internet to view latest tweets", Toast.LENGTH_LONG).show();
-        }
+        homeTimelineFragment = (HomeTimelineFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_tweets);
     }
-
-    private Boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
-    }
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -161,34 +102,11 @@ public class TimelineActivity extends AppCompatActivity  implements ComposeFragm
         return super.onOptionsItemSelected(item);
     }
 
-    private void populateTimeline() {
-        client.getHomeTimeline(new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                ArrayList<Tweet> tweetParsed = Tweet.fromJSONArray(response);
-                if (tweetParsed != null && tweetParsed.size() > 0) {
-                    Log.d("DEBUG", Long.toString(tweetParsed.get(tweetParsed.size()-1).getUid()));
-                    lastID = tweetParsed.get(tweetParsed.size()-1).getUid();
-                    tweets.addAll(tweetParsed);
-                    aTweets.notifyDataSetChanged();
-                }
-                swipeContainer.setRefreshing(false);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-            }
-        }, lastID-1);
-    }
-
     @Override
     public void onFinishComposeDialog(String inputText) {
-        lastID = 0;
-        tweets.clear();
-        aTweets.notifyDataSetChanged();
-
-        populateTimeline();
+        homeTimelineFragment.getTweets().clear();
+        homeTimelineFragment.getaTweets().notifyDataSetChanged();
+        homeTimelineFragment.reloadTweets();
     }
 
 }

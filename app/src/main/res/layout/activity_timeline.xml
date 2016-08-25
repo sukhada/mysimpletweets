@@ -1,19 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:minHeight="?attr/actionBarSize"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:titleTextColor="@android:color/white"
-        android:background="#4099FF">
-    </android.support.v7.widget.Toolbar>
-
     <!-- Layout for content is here. This can be a RelativeLayout  -->
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -22,23 +7,14 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context="com.codepath.apps.mysimpletweets.TimelineActivity">
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/swipeContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        <android.support.v7.widget.RecyclerView
+        <fragment
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/lvTweets"
+            android:name="com.codepath.apps.mysimpletweets.fragments.HomeTimelineFragment"
+            android:id="@+id/fragment_tweets"
             android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:background="#fff" />
-
-        </android.support.v4.widget.SwipeRefreshLayout>
+            tools:layout="@layout/fragment_tweets_list" />
 
 
     </RelativeLayout>
-</LinearLayout>
