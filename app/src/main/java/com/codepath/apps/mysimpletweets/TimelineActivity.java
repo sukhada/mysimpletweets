@@ -6,6 +6,9 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.app.DialogFragment;
@@ -30,6 +33,7 @@ import android.widget.Toast;
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
 import com.activeandroid.query.Delete;
+import com.astuetz.PagerSlidingTabStrip;
 import com.codepath.apps.mysimpletweets.fragments.HomeTimelineFragment;
 import com.codepath.apps.mysimpletweets.fragments.MentionsTimelineFragment;
 import com.codepath.apps.mysimpletweets.fragments.TweetsListFragment;
@@ -45,69 +49,72 @@ import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
-public class TimelineActivity extends AppCompatActivity  implements ComposeFragment.CreateTweetDialogListener {
-    private MentionsTimelineFragment homeTimelineFragment;
-
+public class TimelineActivity extends AppCompatActivity {
+    Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setLogo(R.drawable.ic_twitter_logo);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
-
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         Configuration.Builder config = new Configuration.Builder(this);
         config.addModelClasses(Tweet.class, User.class);
         ActiveAndroid.initialize(config.create());
 
-        homeTimelineFragment = (MentionsTimelineFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_tweets);
-    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_timeline, menu);
-        final Menu m = menu;
-        final MenuItem item = menu.findItem(R.id.miCompose);
-        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                FragmentManager fm = getSupportFragmentManager();
-                ComposeFragment composeFragment = ComposeFragment.newInstance("Some Title");
-                composeFragment.show(fm, "fragment_compose");
-                return true;
-            }
-        });
-        return true;
+        ViewPager vPager = (ViewPager) findViewById(R.id.viewpager);
+        vPager.setAdapter(new TweetsPagerAdapter(getSupportFragmentManager()));
+
+        PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        tabStrip.setViewPager(vPager);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+    public class TweetsPagerAdapter extends FragmentPagerAdapter {
+        private String tabTitles[] = {"Home", "Mentions"};
 
-        switch (item.getItemId()){
-            case R.id.miCompose:
-                FragmentManager fm = getSupportFragmentManager();
-                ComposeFragment composeFragment = ComposeFragment.newInstance("Some Title");
-                composeFragment.show(fm, "fragment_compose");
-                break;
+        public TweetsPagerAdapter(FragmentManager fm) {
+            super(fm);
         }
-        return super.onOptionsItemSelected(item);
+
+        @Override
+        public Fragment getItem(int position) {
+            if (position == 0) {
+                return new HomeTimelineFragment();
+            }
+            else if (position == 1) {
+                return new MentionsTimelineFragment();
+            }
+
+            return null;
+        }
+
+
+        @Override
+        public int getCount() {
+            return tabTitles.length;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            if (position == 0) {
+                return "Home Timeline";
+            }
+            else {
+                return "Mentions Timeline";
+            }
+        }
     }
 
-    @Override
-    public void onFinishComposeDialog(String inputText) {
-        homeTimelineFragment.getTweets().clear();
-        homeTimelineFragment.getaTweets().notifyDataSetChanged();
-        homeTimelineFragment.reloadTweets();
+
+    public void onProfileView(MenuItem item) {
+        Intent i = new Intent(this, ProfileActivity.class);
+        startActivity(i);
     }
 
 }

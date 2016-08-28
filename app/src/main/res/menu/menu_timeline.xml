@@ -6,4 +6,11 @@
         app:showAsAction="ifRoom"
         android:title="New Tweet">
     </item>
+    <item
+        android:id="@+id/miProfile"
+        android:icon="@drawable/ic_account"
+        app:showAsAction="ifRoom"
+        android:onClick="onProfileView"
+        android:title="">
+    </item>
 </menu>

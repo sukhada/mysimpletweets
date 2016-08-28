@@ -104,8 +104,7 @@ public class ComposeFragment extends DialogFragment implements TextView.OnEditor
                 client.postStatusUpdate(new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        Log.d("DEBUG", response.toString());
-                        CreateTweetDialogListener listener = (CreateTweetDialogListener) getActivity();
+                        CreateTweetDialogListener listener = (CreateTweetDialogListener) getParentFragment();
                         listener.onFinishComposeDialog(newTweet.getText().toString());
                         dismiss();
                     }
