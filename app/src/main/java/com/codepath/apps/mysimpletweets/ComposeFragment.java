@@ -105,7 +105,9 @@ public class ComposeFragment extends DialogFragment implements TextView.OnEditor
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         CreateTweetDialogListener listener = (CreateTweetDialogListener) getParentFragment();
-                        listener.onFinishComposeDialog(newTweet.getText().toString());
+                        if (listener != null) {
+                            listener.onFinishComposeDialog(newTweet.getText().toString());
+                        }
                         dismiss();
                     }
                     @Override

@@ -22,6 +22,9 @@
         android:id="@+id/tabs"
         app:pstsShouldExpand="true"
         app:pstsTextAllCaps="true"
+        android:background="@android:color/white"
+        android:textColor="#4099FF"
+        app:pstsIndicatorColor="#4099FF"
         android:layout_below="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="48dp" />

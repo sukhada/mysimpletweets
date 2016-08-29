@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.codepath.apps.mysimpletweets.ComposeFragment;
 import com.codepath.apps.mysimpletweets.EndlessRecyclerViewScrollListener;
 import com.codepath.apps.mysimpletweets.R;
 import com.codepath.apps.mysimpletweets.TwitterApplication;
@@ -30,7 +31,7 @@ import cz.msebera.android.httpclient.Header;
 /**
  * Created by skulkarni on 8/25/16.
  */
-public class UserTimelineFragment extends TweetsListFragment {
+public class UserTimelineFragment extends TweetsListFragment implements ComposeFragment.CreateTweetDialogListener {
     private TwitterClient client;
     private SwipeRefreshLayout swipeContainer;
     long lastID = 0;
@@ -126,5 +127,14 @@ public class UserTimelineFragment extends TweetsListFragment {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
             }
         });
+    }
+
+    @Override
+    public void onFinishComposeDialog(String inputText) {
+        lastID = 0;
+        getTweets().clear();
+        getaTweets().notifyDataSetChanged();
+
+        populateTimeline();
     }
 }

@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.Image;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.mysimpletweets.models.Tweet;
@@ -29,7 +31,7 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 /**
  * Created by skulkarni on 8/18/16.
  */
-public class TweetDetailActivity extends AppCompatActivity {
+public class TweetDetailActivity extends AppCompatActivity implements ComposeFragment.CreateTweetDialogListener {
     private Tweet tweet;
     @BindView(R.id.ivDetailProfileImage) ImageView ivProfileImage;
     @BindView(R.id.tvDetailScreenname) TextView tvUserName;
@@ -56,6 +58,7 @@ public class TweetDetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setLogo(R.drawable.ic_twitter_logo);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
         tweet = (Tweet) getIntent().getSerializableExtra("tweet");
@@ -185,5 +188,9 @@ public class TweetDetailActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onFinishComposeDialog(String inputText) {
+        Toast.makeText(this, inputText, Toast.LENGTH_SHORT).show();
+    }
 
 }

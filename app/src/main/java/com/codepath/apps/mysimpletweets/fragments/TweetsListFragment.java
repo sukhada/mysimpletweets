@@ -1,6 +1,7 @@
 package com.codepath.apps.mysimpletweets.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -8,10 +9,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,7 +28,10 @@ import android.widget.ImageView;
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
 import com.codepath.apps.mysimpletweets.ComposeFragment;
+import com.codepath.apps.mysimpletweets.ProfileActivity;
 import com.codepath.apps.mysimpletweets.R;
+import com.codepath.apps.mysimpletweets.SearchActivity;
+import com.codepath.apps.mysimpletweets.TimelineActivity;
 import com.codepath.apps.mysimpletweets.TweetsArrayAdapter;
 import com.codepath.apps.mysimpletweets.TwitterApplication;
 import com.codepath.apps.mysimpletweets.TwitterClient;
@@ -43,7 +50,7 @@ import cz.msebera.android.httpclient.Header;
 /**
  * Created by skulkarni on 8/24/16.
  */
-public class TweetsListFragment extends Fragment implements ComposeFragment.CreateTweetDialogListener{
+public class TweetsListFragment extends Fragment implements ComposeFragment.CreateTweetDialogListener {
 
     private ArrayList<Tweet> tweets;
     private TweetsArrayAdapter aTweets;
@@ -92,6 +99,33 @@ public class TweetsListFragment extends Fragment implements ComposeFragment.Crea
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_timeline, menu);
+        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // perform query here
+
+                // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
+                // see https://code.google.com/p/android/issues/detail?id=24599
+                searchView.clearFocus();
+                /*Intent i = new Intent(getContext(), SearchActivity.class);
+                i.putExtra("q", query);
+                getContext().startActivity(i);*/
+                SearchTimelineFragment searchTimelineFragment = SearchTimelineFragment.newInstance(query);
+
+                FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+                ft.replace(R.id.flTweetsListContainer, searchTimelineFragment);
+                ft.commit();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
     }
 
     public void reloadTweets() {

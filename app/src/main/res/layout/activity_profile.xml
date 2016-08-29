@@ -14,6 +14,7 @@
         app:titleTextColor="@android:color/white"
         android:background="#4099FF"/>
 
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -54,20 +55,36 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvTagline"
+            android:textStyle="bold"
             android:layout_marginTop="10dp"
-            android:layout_toRightOf="@id/ivProfileProfileImage"
-            android:text="5 Followers"/>
+            android:layout_toRightOf="@id/ivProfileProfileImage"/>
+        <TextView
+            android:id="@+id/tvFollowersCaption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvTagline"
+            android:layout_toRightOf="@id/tvFollowers"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:text="Following"/>
         <TextView
             android:id="@+id/tvFollowing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvTagline"
-            android:layout_toRightOf="@id/tvFollowers"
+            android:textStyle="bold"
+            android:layout_toRightOf="@id/tvFollowersCaption"
             android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp" />
+        <TextView
+            android:id="@+id/tvFollowingCaption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvTagline"
+            android:layout_toRightOf="@id/tvFollowing"
+            android:layout_marginLeft="5dp"
             android:layout_marginTop="10dp"
-            android:text="5 Following"/>
-
-
+            android:text="Following"/>
     </RelativeLayout>
     <LinearLayout
         android:id="@+id/llCounts"
@@ -77,8 +94,6 @@
         android:layout_marginBottom="10dp"
         android:orientation="horizontal"
         android:paddingLeft="10dp">
-
-
 
     </LinearLayout>
 

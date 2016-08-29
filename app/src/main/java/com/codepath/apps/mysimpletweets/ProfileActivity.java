@@ -95,10 +95,8 @@ public class ProfileActivity extends TimelineActivity {
 
         tvName.setText(user.getName());
         tvTagline.setText(user.getTagline());
-        tvFollowers.setText(Integer.toString(user.getFollowersCount()) + " Followers");
-        tvFollowing.setText(Integer.toString(user.getFollowingCount()) + " Following");
+        tvFollowers.setText(Integer.toString(user.getFollowersCount()));
+        tvFollowing.setText(Integer.toString(user.getFollowingCount()));
         Glide.with(this).load(user.getProfileImageUrl()).into(ivProfileImage);
-
-
     }
 }

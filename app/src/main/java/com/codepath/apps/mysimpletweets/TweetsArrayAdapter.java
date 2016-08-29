@@ -5,6 +5,7 @@ import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.mysimpletweets.fragments.UserTimelineFragment;
@@ -28,6 +30,7 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import cz.msebera.android.httpclient.Header;
@@ -96,7 +99,7 @@ public class TweetsArrayAdapter extends RecyclerView.Adapter<TweetsArrayAdapter.
             tvRetweetCount.setText(Integer.toString(tweet.getRetweetCount()));
             tvFavoriteCount.setText(Integer.toString(tweet.getFavouritesCount()));
 
-            if (tweet.getMedia() != null) {
+            if (tweet != null && tweet.getMedia() != null) {
                 Glide.with(context).load(tweet.getMedia())
                         .bitmapTransform(new RoundedCornersTransformation(context, 15, 0))
                         .into(ivPreview);
@@ -105,7 +108,7 @@ public class TweetsArrayAdapter extends RecyclerView.Adapter<TweetsArrayAdapter.
                 ivPreview.setImageResource(0);
             }
 
-            if (tweet.getFavorited()) {
+            if (tweet != null && tweet.getFavorited()) {
                 tvFavoriteCount.setTextColor(0xFFFF0000);
                 ivFavorite.setColorFilter(0xFFFF0000);
             }
@@ -114,7 +117,7 @@ public class TweetsArrayAdapter extends RecyclerView.Adapter<TweetsArrayAdapter.
                 ivFavorite.setColorFilter(0xFFA8A8A8);
             }
 
-            if (tweet.getRetweeted()) {
+            if (tweet != null && tweet.getRetweeted()) {
                 tvRetweetCount.setTextColor(0xFF008000);
                 ivRetweet.setColorFilter(0xFF008000);
             }
@@ -246,6 +249,28 @@ public class TweetsArrayAdapter extends RecyclerView.Adapter<TweetsArrayAdapter.
                 composeFragment.show(fm, "fragment_compose");
             }
         });
+
+        new PatternEditableBuilder().
+                addPattern(Pattern.compile("\\@(\\w+)"), Color.rgb(64,153,255),
+                        new PatternEditableBuilder.SpannableClickedListener() {
+                            @Override
+                            public void onSpanClicked(String text) {
+                                Intent i = new Intent(getContext(), ProfileActivity.class);
+                                i.putExtra("screen_name", text.replace("@", ""));
+                                getContext().startActivity(i);
+                            }
+                        }).into(viewHolder.tvBody);
+
+        new PatternEditableBuilder().
+                addPattern(Pattern.compile("\\#(\\w+)"), Color.rgb(64,153,255),
+                        new PatternEditableBuilder.SpannableClickedListener() {
+                            @Override
+                            public void onSpanClicked(String text) {
+                                Intent i = new Intent(getContext(), SearchActivity.class);
+                                i.putExtra("q", text.replace("#", ""));
+                                getContext().startActivity(i);
+                            }
+                        }).into(viewHolder.tvBody);
     }
 
     @Override
